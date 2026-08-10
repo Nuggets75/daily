@@ -64,15 +64,15 @@ const ENERGY_UPKEEP_EXTRA = new Set([
   'XSA0302', // Iaselen (mobile omni)
 ]);
 
-// Resources a unit makes or needs, across three resources: Mass, Energy and
-// Buildpower.
+// Resources a unit makes or needs. The three are independent tags — a unit
+// shows every one that applies (e.g. a T1 mex is Mass + Buildpower + Upkeep).
 //   - Mass / Energy: production (same category tags as before).
-//   - Buildpower: any build rate. A builder inherently spends mass+energy to
-//     build, so this IS the "uses mass & energy" set.
-//   - Upkeep: drains energy without building. Exclusive of Buildpower (a builder
-//     is a mass+energy unit, not an energy-only one). Passive maintenance comes
-//     from the data; a few firing/activity energy users show 0 there and are
-//     listed in ENERGY_UPKEEP_EXTRA.
+//   - Buildpower: any build rate.
+//   - Upkeep: drains energy. Passive maintenance comes from the data; a few
+//     firing/activity users show 0 there and are listed in ENERGY_UPKEEP_EXTRA.
+//     Artillery fires on energy too, but a builder's own build drain already
+//     covers its mass+energy, so an artillery weapon only adds Upkeep for
+//     non-builders (keeps the Megalith on Buildpower, not Upkeep).
 function producesOf(u) {
   const e = u.Economy || {};
   const builds = (e.BuildRate || 0) > 0;
@@ -80,11 +80,12 @@ function producesOf(u) {
   if (has(u, 'MASSPRODUCTION')) r.push('Mass');
   if (has(u, 'ENERGYPRODUCTION')) r.push('Energy');
   if (builds) r.push('Buildpower');
-  // Artillery fires on energy (the export's maintenance field is 0 for it).
   const firesOnEnergy = (u.Weapon || []).some((w) => /^Artillery$/i.test(w.WeaponCategory || ''));
-  const drainsEnergy =
-    (e.MaintenanceConsumptionPerSecondEnergy || 0) > 0 || firesOnEnergy || ENERGY_UPKEEP_EXTRA.has(u.Id);
-  if (!builds && drainsEnergy) r.push('Upkeep');
+  const upkeep =
+    (e.MaintenanceConsumptionPerSecondEnergy || 0) > 0 ||
+    ENERGY_UPKEEP_EXTRA.has(u.Id) ||
+    (firesOnEnergy && !builds);
+  if (upkeep) r.push('Upkeep');
   return r.length ? r : ['None'];
 }
 
