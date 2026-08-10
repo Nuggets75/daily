@@ -49,17 +49,19 @@ function weaponOf(u) {
   return set.size ? [...set] : ['None'];
 }
 
-// Units whose energy cost is a firing / activity cost, not passive maintenance,
-// so the data export shows 0 for them — flagged as Upkeep explicitly.
-//   experimental artillery (fire on energy) + air staging (refuels on energy).
+// Energy users whose cost isn't passive maintenance and isn't an artillery
+// weapon, so the data export shows 0 — flagged as Upkeep explicitly.
+//   air staging (refuels aircraft on energy) + a few named units.
+// (All artillery, incl. experimentals like Mavor/Scathis/Salvation, is caught
+// by the Artillery weapon category in producesOf — not listed here.)
 const ENERGY_UPKEEP_EXTRA = new Set([
-  'UEB2401', // Mavor
-  'XAB2307', // Salvation
-  'URL0401', // Scathis
   'UAB5202', // Air Staging — Cradle
   'UEB5202', // Air Staging — Refuel & Repair
   'URB5202', // Air Staging Facility
   'XSB5202', // Air Staging — Iathu-uhthe
+  'XEB2306', // Ravager
+  'XAB3301', // Eye of Rhianne
+  'XSA0302', // Iaselen (mobile omni)
 ]);
 
 // Resources a unit makes or needs, across three resources: Mass, Energy and
@@ -78,8 +80,10 @@ function producesOf(u) {
   if (has(u, 'MASSPRODUCTION')) r.push('Mass');
   if (has(u, 'ENERGYPRODUCTION')) r.push('Energy');
   if (builds) r.push('Buildpower');
+  // Artillery fires on energy (the export's maintenance field is 0 for it).
+  const firesOnEnergy = (u.Weapon || []).some((w) => /^Artillery$/i.test(w.WeaponCategory || ''));
   const drainsEnergy =
-    (e.MaintenanceConsumptionPerSecondEnergy || 0) > 0 || ENERGY_UPKEEP_EXTRA.has(u.Id);
+    (e.MaintenanceConsumptionPerSecondEnergy || 0) > 0 || firesOnEnergy || ENERGY_UPKEEP_EXTRA.has(u.Id);
   if (!builds && drainsEnergy) r.push('Upkeep');
   return r.length ? r : ['None'];
 }
