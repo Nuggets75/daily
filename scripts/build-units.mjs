@@ -49,18 +49,38 @@ function weaponOf(u) {
   return set.size ? [...set] : ['None'];
 }
 
-// Resources a unit makes or needs. Mass / Energy production (same category tags
-// as before), plus Buildpower for anything with a build rate (engineers,
-// factories, commanders, builder units like the Mantis), plus an energy-upkeep
-// tag (rendered "Energy ↓") for units that drain energy just by existing. No
-// unit in the data has a mass upkeep, and none both produce and drain energy.
+// Units whose energy cost is a firing / activity cost, not passive maintenance,
+// so the data export shows 0 for them — flagged as Upkeep explicitly.
+//   experimental artillery (fire on energy) + air staging (refuels on energy).
+const ENERGY_UPKEEP_EXTRA = new Set([
+  'UEB2401', // Mavor
+  'XAB2307', // Salvation
+  'URL0401', // Scathis
+  'UAB5202', // Air Staging — Cradle
+  'UEB5202', // Air Staging — Refuel & Repair
+  'URB5202', // Air Staging Facility
+  'XSB5202', // Air Staging — Iathu-uhthe
+]);
+
+// Resources a unit makes or needs, across three resources: Mass, Energy and
+// Buildpower.
+//   - Mass / Energy: production (same category tags as before).
+//   - Buildpower: any build rate. A builder inherently spends mass+energy to
+//     build, so this IS the "uses mass & energy" set.
+//   - Upkeep: drains energy without building. Exclusive of Buildpower (a builder
+//     is a mass+energy unit, not an energy-only one). Passive maintenance comes
+//     from the data; a few firing/activity energy users show 0 there and are
+//     listed in ENERGY_UPKEEP_EXTRA.
 function producesOf(u) {
   const e = u.Economy || {};
+  const builds = (e.BuildRate || 0) > 0;
   const r = [];
   if (has(u, 'MASSPRODUCTION')) r.push('Mass');
   if (has(u, 'ENERGYPRODUCTION')) r.push('Energy');
-  if ((e.BuildRate || 0) > 0) r.push('Buildpower');
-  if ((e.MaintenanceConsumptionPerSecondEnergy || 0) > 0) r.push('Upkeep');
+  if (builds) r.push('Buildpower');
+  const drainsEnergy =
+    (e.MaintenanceConsumptionPerSecondEnergy || 0) > 0 || ENERGY_UPKEEP_EXTRA.has(u.Id);
+  if (!builds && drainsEnergy) r.push('Upkeep');
   return r.length ? r : ['None'];
 }
 
