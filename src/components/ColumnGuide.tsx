@@ -1,4 +1,4 @@
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ArrowDown, ChevronDown, HelpCircle } from 'lucide-react';
 import { buildColumnGuide } from '../lib/columnGuide';
 
 // Compact number for the value ranges: 6,000,000 → 6m, 250,200 → 250k.
@@ -33,8 +33,9 @@ export function ColumnGuide() {
                   {g.values.map((v) => (
                     <span
                       key={v}
-                      className="border border-line bg-surface2 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-slate-300"
+                      className="inline-flex items-center gap-0.5 border border-line bg-surface2 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-slate-300"
                     >
+                      {/upkeep/i.test(v) && <ArrowDown className="h-2.5 w-2.5 shrink-0" strokeWidth={3} />}
                       {v}
                     </span>
                   ))}

@@ -1,4 +1,4 @@
-import { ChevronUp, ChevronDown, Lock } from 'lucide-react';
+import { ChevronUp, ChevronDown, ArrowDown, Lock } from 'lucide-react';
 import type { Unit } from '../lib/units';
 import { FACTION_COLOR } from '../lib/units';
 import { COLUMNS } from '../lib/compare';
@@ -75,7 +75,11 @@ function CellBody({ cell }: { cell: Cell }) {
     return (
       <div className="flex w-full flex-col gap-0.5">
         {cell.list.map((item, i) => (
-          <span key={i} className="whitespace-normal text-[10px] font-semibold leading-tight">
+          <span
+            key={i}
+            className="inline-flex items-center justify-center gap-0.5 whitespace-normal text-[10px] font-semibold leading-tight"
+          >
+            {/upkeep/i.test(item) && <ArrowDown className="h-2.5 w-2.5 shrink-0" strokeWidth={3} />}
             {item}
           </span>
         ))}
