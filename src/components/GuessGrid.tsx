@@ -74,15 +74,20 @@ function CellBody({ cell }: { cell: Cell }) {
   if (cell.list) {
     return (
       <div className="flex w-full flex-col gap-0.5">
-        {cell.list.map((item, i) => (
-          <span
-            key={i}
-            className="inline-flex items-center justify-center gap-0.5 whitespace-normal text-[10px] font-semibold leading-tight"
-          >
-            {/upkeep/i.test(item) && <ArrowDown className="h-2.5 w-2.5 shrink-0" strokeWidth={3} />}
-            {item}
-          </span>
-        ))}
+        {cell.list.map((item, i) => {
+          const upkeep = /upkeep/i.test(item);
+          return (
+            <span
+              key={i}
+              className={`inline-flex items-center justify-center gap-0.5 text-[10px] font-semibold leading-tight ${
+                upkeep ? 'whitespace-nowrap' : 'whitespace-normal'
+              }`}
+            >
+              {upkeep && <ArrowDown className="h-2.5 w-2.5 shrink-0" strokeWidth={3} />}
+              {item}
+            </span>
+          );
+        })}
       </div>
     );
   }

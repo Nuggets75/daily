@@ -60,7 +60,7 @@ function producesOf(u) {
   if (has(u, 'MASSPRODUCTION')) r.push('Mass');
   if (has(u, 'ENERGYPRODUCTION')) r.push('Energy');
   if ((e.BuildRate || 0) > 0) r.push('Buildpower');
-  if ((e.MaintenanceConsumptionPerSecondEnergy || 0) > 0) r.push('Energy upkeep');
+  if ((e.MaintenanceConsumptionPerSecondEnergy || 0) > 0) r.push('Upkeep');
   return r.length ? r : ['None'];
 }
 
