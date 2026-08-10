@@ -25,9 +25,9 @@ export const COLUMNS: Column[] = [
   { key: 'type', label: 'Type', kind: 'cat' },
   { key: 'domain', label: 'Domain', kind: 'cat' },
   { key: 'weapon', label: 'Weapon', kind: 'set' },
-  // "Yields" (not "Produces") — this is resource output; factories produce units,
-  // which was confusing people.
-  { key: 'produces', label: 'Yields', kind: 'set' },
+  // "Resources": what the unit makes or needs — Mass / Energy production,
+  // Buildpower (build rate), and an Energy-upkeep tag (Energy ↓).
+  { key: 'produces', label: 'Resources', kind: 'set' },
   { key: 'role', label: 'Role', kind: 'set' },
   { key: 'mass', label: 'Mass', kind: 'num' },
   { key: 'hp', label: 'HP', kind: 'num' },

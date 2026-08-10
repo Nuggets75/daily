@@ -49,10 +49,18 @@ function weaponOf(u) {
   return set.size ? [...set] : ['None'];
 }
 
+// Resources a unit makes or needs. Mass / Energy production (same category tags
+// as before), plus Buildpower for anything with a build rate (engineers,
+// factories, commanders, builder units like the Mantis), plus an energy-upkeep
+// tag (rendered "Energy ↓") for units that drain energy just by existing. No
+// unit in the data has a mass upkeep, and none both produce and drain energy.
 function producesOf(u) {
+  const e = u.Economy || {};
   const r = [];
   if (has(u, 'MASSPRODUCTION')) r.push('Mass');
   if (has(u, 'ENERGYPRODUCTION')) r.push('Energy');
+  if ((e.BuildRate || 0) > 0) r.push('Buildpower');
+  if ((e.MaintenanceConsumptionPerSecondEnergy || 0) > 0) r.push('Energy ↓');
   return r.length ? r : ['None'];
 }
 

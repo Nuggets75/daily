@@ -11,6 +11,7 @@ import { Search } from './components/Search';
 import { GuessGrid } from './components/GuessGrid';
 import type { GuessResult } from './components/GuessGrid';
 import { ColumnGuide } from './components/ColumnGuide';
+import { UpdateBanner } from './components/UpdateBanner';
 import { UnitIcon } from './components/UnitIcon';
 
 const STORE_KEY = 'faf-daily'; // normal daily (also migrates the legacy key)
@@ -148,6 +149,8 @@ export default function App() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto max-w-[1240px] px-4 py-10 sm:py-14">
+        <UpdateBanner />
+
         {/* header */}
         <header className="border-b border-line pb-5">
           <div className="flex items-start justify-between gap-4">
