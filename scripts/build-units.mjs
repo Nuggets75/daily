@@ -85,7 +85,7 @@ function producesOf(u) {
     (e.MaintenanceConsumptionPerSecondEnergy || 0) > 0 ||
     ENERGY_UPKEEP_EXTRA.has(u.Id) ||
     (firesOnEnergy && !builds);
-  if (upkeep) r.push('Upkeep');
+  if (upkeep) r.push('E upkeep');
   return r.length ? r : ['None'];
 }
 

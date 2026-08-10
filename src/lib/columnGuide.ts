@@ -24,7 +24,7 @@ const DESC: Record<string, string> = {
     "The unit's in-game layer, read from its icon background. Related layers (Land / Hover / Amphibious) score a partial (amber).",
   weapon: 'Weapon categories it carries — a unit can have several, or None.',
   produces:
-    'What it makes or needs: produces Mass or Energy, has Buildpower (a build rate), or drains Energy just to run — shown as Upkeep.',
+    'What it makes or needs: produces Mass or Energy, has Buildpower (a build rate), or drains Energy just to run — shown as E upkeep.',
   role: 'What the unit is for — it can fill several roles at once.',
   mass: 'Mass cost to build. The arrow points toward the answer; amber when within ~20%.',
   hp: 'Maximum hit points. The arrow points toward the answer; amber when within ~20%.',
@@ -41,7 +41,7 @@ const ORDER: Record<string, string[]> = {
   type: ['Unit', 'Building', 'Egg'],
   domain: ['Land', 'Hover', 'Amphibious', 'Naval', 'Air'],
   weapon: ['Direct Fire', 'Indirect', 'Anti-Air', 'Torpedoes', 'None'],
-  produces: ['Mass', 'Energy', 'Buildpower', 'Upkeep', 'None'],
+  produces: ['Mass', 'Energy', 'Buildpower', 'E upkeep', 'None'],
   role: ['Combat', 'Factory', 'Engineer', 'Transport', 'Defense', 'Economy', 'Intel', 'Shield', 'Support', 'Egg'],
   abilities: [
     'Shield Dome', 'Personal Shield',
