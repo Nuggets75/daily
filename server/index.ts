@@ -10,6 +10,7 @@ import { randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { buildState } from './state';
+import { statsFor, recordSolve } from './stats';
 import type { Mode } from './answer';
 
 const PORT = Number(process.env.PORT) || 8090;
@@ -81,8 +82,24 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
       const guesses: string[] = Array.isArray(body.guesses)
         ? body.guesses.filter((x): x is string => typeof x === 'string')
         : [];
-      const state = buildState(mode, new Date(), guesses, SECRET);
+      const now = new Date();
+      const state = buildState(mode, now, guesses, SECRET, statsFor(now));
       return send(res, 200, state);
+    }
+
+    // A browser reports its first solve of the day (guarded client-side so it
+    // only pings once per browser per mode per day). Best-effort tally.
+    if (req.method === 'POST' && req.url === '/api/daily/solved') {
+      const raw = await readBody(req);
+      let body: { mode?: unknown };
+      try {
+        body = JSON.parse(raw || '{}');
+      } catch {
+        return send(res, 400, { error: 'bad json' });
+      }
+      const mode: Mode = body.mode === 'challenge' ? 'challenge' : 'daily';
+      const stats = recordSolve(new Date(), mode);
+      return send(res, 200, { ok: true, stats });
     }
 
     return send(res, 404, { error: 'not found' });

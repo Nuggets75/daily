@@ -7,11 +7,14 @@ import { challengeConfig } from './challenge';
 import { findById, type Unit } from '../src/lib/units';
 import { puzzleNumber } from '../src/lib/daily';
 import { resolveAnswer, type Mode } from './answer';
+import type { SolveCounts } from './stats';
 
 export interface DailyState {
   puzzleNumber: number;
   mode: Mode;
   solved: boolean;
+  /** How many people have solved today's daily and challenge. */
+  stats: SolveCounts;
   /** Column keys hidden this round (challenge, while unsolved). */
   hidden: string[];
   /** Per-guess comparison cells, in the same order as the guesses sent. */
@@ -45,11 +48,17 @@ function describeValue(kind: string, value: unknown): string {
   return String(value);
 }
 
-export function buildState(mode: Mode, date: Date, ids: string[], secret: string): DailyState {
+export function buildState(
+  mode: Mode,
+  date: Date,
+  ids: string[],
+  secret: string,
+  stats: SolveCounts = { daily: 0, challenge: 0 }
+): DailyState {
   const answer = resolveAnswer(mode, date, secret);
   const guesses = ids.map(findById).filter((u): u is Unit => !!u);
   const solved = guesses.some((g) => g.id === answer.id);
-  const base = { puzzleNumber: puzzleNumber(date), mode, solved };
+  const base = { puzzleNumber: puzzleNumber(date), mode, solved, stats };
 
   if (mode === 'challenge') {
     const cfg = challengeConfig(answer, date, secret);

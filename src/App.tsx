@@ -4,7 +4,7 @@ import { UNITS, findById } from './lib/units';
 import type { Unit } from './lib/units';
 import { todayKey, puzzleNumber, msUntilNextUTCDay, formatCountdown } from './lib/daily';
 import { columnLabels } from './lib/compare';
-import { fetchDailyState } from './lib/api';
+import { fetchDailyState, reportSolved } from './lib/api';
 import type { DailyState, Mode } from './lib/api';
 import { buildShareImage } from './lib/shareImage';
 import { Search } from './components/Search';
@@ -111,6 +111,22 @@ export default function App() {
     return () => clearInterval(id);
   }, [solved]);
 
+  // Count this browser's first solve of the day (once per mode) toward the
+  // "solved today" tally, then reflect the updated count.
+  useEffect(() => {
+    if (!solved) return;
+    const key = `faf-daily-counted-${mode}-${todayKey()}`;
+    try {
+      if (localStorage.getItem(key)) return;
+      localStorage.setItem(key, '1');
+    } catch {
+      /* ignore */
+    }
+    reportSolved(mode).then((counts) => {
+      if (counts) setState((prev) => (prev ? { ...prev, stats: counts } : prev));
+    });
+  }, [solved, mode]);
+
   const guessedIds = useMemo(() => new Set(guesses.map((g) => g.id)), [guesses]);
   const pool = useMemo(() => UNITS.filter((u) => !guessedIds.has(u.id)), [guessedIds]);
 
@@ -202,6 +218,14 @@ export default function App() {
             <span>{UNITS.length} units</span>
             <span className="text-slate-700">/</span>
             <span>{guesses.length} {guesses.length === 1 ? 'guess' : 'guesses'}</span>
+            {state && (
+              <>
+                <span className="text-slate-700">/</span>
+                <span className="text-accent">
+                  {state.stats[mode].toLocaleString()} solved today
+                </span>
+              </>
+            )}
           </div>
         </header>
 
