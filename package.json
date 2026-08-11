@@ -11,7 +11,8 @@
     "typecheck:server": "tsc -p tsconfig.server.json",
     "server": "tsx watch server/index.ts",
     "build:units": "node scripts/build-units.mjs",
-    "update-data": "node scripts/fetch-data.mjs && node scripts/build-units.mjs"
+    "fetch-icons": "node scripts/fetch-icons.mjs",
+    "update-data": "node scripts/fetch-data.mjs && node scripts/build-units.mjs && node scripts/fetch-icons.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.460.0",

@@ -34,8 +34,10 @@ export function findById(id: string): Unit | undefined {
   return UNITS.find((u) => u.id === id);
 }
 
-// Unit build-icon, hotlinked from the FAForever UnitDB repo via the jsDelivr
-// CDN (keyed by unit Id). Falls back to a faction placeholder on error.
+// Unit build-icon, served same-origin from public/icons/ (populated by
+// scripts/fetch-icons.mjs from the FAForever UnitDB repo). Self-hosting avoids
+// jsDelivr rate limits, adblocker/tracking-protection blocks, and cross-origin
+// canvas tainting. Falls back to a faction placeholder on error.
 export function iconUrl(id: string): string {
-  return `https://cdn.jsdelivr.net/gh/FAForever/UnitDB@master/www/res/img/preview/${id}.png`;
+  return `/icons/${id}.png`;
 }
