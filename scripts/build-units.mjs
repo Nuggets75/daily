@@ -62,6 +62,7 @@ const ENERGY_UPKEEP_EXTRA = new Set([
   'XEB2306', // Ravager
   'XAB3301', // Eye of Rhianne
   'XSA0302', // Iaselen (mobile omni)
+  'XEA0002', // Novax Defense Satellite — fires on energy (v3837)
 ]);
 
 // Resources a unit makes or needs. The three are independent tags — a unit
